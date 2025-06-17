@@ -1,33 +1,31 @@
 
 import streamlit as st
-from PIL import Image, ImageEnhance
+from PIL import Image
 import numpy as np
 import io
 import time
-import face_recognition
-from sklearn.metrics.pairwise import cosine_similarity
+from deepface import DeepFace
+from deepface.commons import functions
 import matplotlib.pyplot as plt
 
-st.title("ChildFacePrivacyGAN - Sentetik Yüz ve Benzerlik Değerlendirme")
+st.title("ChildFacePrivacyGAN - Sentetik Yüz ve Benzerlik Değerlendirme (DeepFace ile)")
 
 uploaded_file = st.file_uploader("Bir çocuk yüzü fotoğrafı yükleyin", type=["jpg", "jpeg", "png"])
 
 def get_face_embedding(image):
     try:
-        image_np = np.array(image)
-        face_locations = face_recognition.face_locations(image_np)
-        if len(face_locations) == 0:
-            return None
-        face_encodings = face_recognition.face_encodings(image_np, face_locations)
-        return face_encodings[0] if face_encodings else None
+        img_np = np.array(image)
+        img_path = "temp_img.jpg"
+        Image.fromarray(img_np).save(img_path)
+        embedding = DeepFace.represent(img_path=img_path, model_name='Facenet')[0]["embedding"]
+        return np.array(embedding)
     except Exception as e:
         return None
 
 def create_simple_synthetic(image):
-    # Yüz üzerinde bazı varyasyonlar yap (dönme + renk filtresi)
+    # Basit sentetiklik simülasyonu: dönme + renk azaltımı
     image = image.rotate(10).transpose(Image.FLIP_LEFT_RIGHT)
-    enhancer = ImageEnhance.Color(image)
-    return enhancer.enhance(0.5)  # Renk doygunluğunu azalt
+    return image.convert("L").convert("RGB")
 
 def plot_similarity_bar(score):
     fig, ax = plt.subplots()
@@ -46,11 +44,11 @@ if uploaded_file is not None:
             synthetic_image = create_simple_synthetic(image)
             st.image(synthetic_image, caption="Sentetik Yüz", use_column_width=True)
 
-            # Embedings hesapla
             real_embedding = get_face_embedding(image)
             synthetic_embedding = get_face_embedding(synthetic_image)
 
             if real_embedding is not None and synthetic_embedding is not None:
+                from sklearn.metrics.pairwise import cosine_similarity
                 similarity = cosine_similarity([real_embedding], [synthetic_embedding])[0][0]
                 st.markdown(f"### 🔍 Yüz Benzerlik Skoru: `{similarity:.4f}`")
                 plot_similarity_bar(similarity)
@@ -60,7 +58,7 @@ if uploaded_file is not None:
                 else:
                     st.warning("⚠️ Sentetik yüz, orijinal yüzle yüksek benzerlik taşıyor (anonimlik riski olabilir).")
             else:
-                st.error("Yüz tanıma başarısız oldu. Daha net bir yüz fotoğrafı yükleyiniz.")
+                st.error("Yüz embed karşılaştırması başarısız oldu. Daha net bir yüz fotoğrafı yükleyin.")
 
         # İndirilebilir dosya
         buf = io.BytesIO()

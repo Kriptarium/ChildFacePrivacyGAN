@@ -1,56 +1,64 @@
 
 # ChildFacePrivacyGAN
 
-**ChildFacePrivacyGAN** is a privacy-conscious Streamlit application designed to generate synthetic child face images from real input photos for research purposes. It emphasizes ethical data handling and is intended for use only with proper ethics approval.
+🔐 Privacy-conscious synthetic face generation platform for child faces with ethical AI safeguards.  
+Developed using Streamlit and DeepFace.
 
 ---
 
-## 📌 Project Description
+## 🚀 Features
 
-This application allows users to upload a real child face image (with ethical clearance) and generates a synthetic version using reversible-safe transformations or, in full versions, a GAN-based generator. It is designed to ensure that no personally identifiable information is retained or reproduced.
+- Upload a child face image (with ethical consent).
+- Generate a synthetic, anonymized version with visual variation.
+- Compare face embeddings using cosine similarity.
+- Graphical similarity score display (bar chart).
+- DeepFace (Facenet) integration for robust representation.
+- Modular and ready for future GAN + ArcFace extensions.
 
 ---
 
-## ⚙️ Installation
+## ▶️ How to Run (Locally or via Streamlit Cloud)
 
-Make sure you have Python 3.8+ installed. Then install the required libraries:
+1. Clone this repository:
+```bash
+git clone https://github.com/yourusername/ChildFacePrivacyGAN.git
+cd ChildFacePrivacyGAN
+```
 
+2. Install dependencies:
 ```bash
 pip install -r requirements.txt
 ```
 
----
-
-## 🚀 Usage
-
-To run the application locally:
-
+3. Run the Streamlit app:
 ```bash
 streamlit run app.py
 ```
 
-1. Upload a child's face image (JPG or PNG).
-2. Click **"Sentetik Yüz Üret"** to create a synthetic version.
-3. Download the generated face for research or augmentation use.
-
 ---
 
-## 🧠 Technical Notes
+## 📦 requirements.txt (Dependencies)
 
-- Current version uses a mirrored transformation for demonstration.
-- Future versions may integrate **StyleGAN2-ADA** or other privacy-aware GANs.
-- The app processes images locally and does not store or transmit them.
+```
+streamlit
+Pillow
+numpy
+matplotlib
+scikit-learn
+opencv-python-headless
+deepface
+tensorflow
+```
 
 ---
 
 ## ⚠️ Ethical Disclaimer
 
-This application is strictly for **academic research and educational purposes** under approved ethical frameworks.
-
-- No real identity is reconstructed.
-- Do not use this application for clinical diagnosis or unauthorized data processing.
-- Always obtain **informed consent** from guardians before using child data.
+This tool is designed **strictly for academic and ethical research use**.  
+- It must not be used for clinical diagnosis or any unauthorized data processing.  
+- Use only with proper ethics board approval and informed guardian consent.  
+- Generated faces do not represent real identities.
 
 ---
 
-© 2025 ChildFacePrivacyGAN Project. All rights reserved.
+© 2025 ChildFacePrivacyGAN. All rights reserved.
